@@ -1,5 +1,5 @@
 import pandas as pd
-from ..config.config_loader import ConfigLoader
+from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
 from ..data_preprocessing.data_engineering import DataEngineer
 
@@ -8,7 +8,7 @@ class DataLoader(object):
 
     def __init__(self, config: ConfigLoader):
         self.__config = config
-        self.data = pd.read_csv(config.paths.datapath)
+        self.data: pd.DataFrame = pd.read_csv(config.paths.datapath)
         self.info_tracker = InfoTracker()
 
     def data_engineering(self):
