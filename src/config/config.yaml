@@ -1,14 +1,20 @@
 paths:
   data_path: "data/NIFTY_50_1minute_with_indicators.csv"
+  paths2save:
+    exploration: "exploration_plots"
 
 data_fuatures_in_use:
-  date: "date"
-  close: "close"
-  open: "open"
-  high: "high"
-  low: "low"
-  volume: "volume"
+    date: "date"
+    close: "close"
+    open: "open"
+    high: "high"
+    low: "low"
+    volume: "volume"
+    labels: "labels"
 
 data_engineering:
   fill_method: "linear"  # polynomial or linear
   poly_order: 2
+
+label_tolerance:
+  tolerance: 0.0001
