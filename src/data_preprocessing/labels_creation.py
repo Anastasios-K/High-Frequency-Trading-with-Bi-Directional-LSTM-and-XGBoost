@@ -50,7 +50,7 @@ class LabelCreator(object):
         df = data_with_shift_n_diff
 
         # tollerance factor
-        tollerance = config.labeltolerance.tolerance
+        tollerance = config.labeltolerance.tollerance
 
         # condition 1 - BUY if % diff is higher than the tollerance threshold
         df.loc[df[self.__diff_col] > tollerance, label_col] = 1
@@ -66,7 +66,7 @@ class LabelCreator(object):
         df.dropna(inplace=True)
 
         # save preprocessed data and labels - To be able to access and use it without executing preprocessing again
-        df.to_csv(os.path.join(self.config.paths.datapath, "preprocessed_data.csv"),
+        df.to_csv(os.path.join(self.config.paths.path2save_data, "preprocessed_data.csv"),
                   index=False, index_label=True)
 
         self.info_tracker.labels = df[label_col]
