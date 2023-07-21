@@ -1,4 +1,6 @@
 data/
 venv/
+exploration_plots/
+models/
 .idea/*
 __pycache__/*

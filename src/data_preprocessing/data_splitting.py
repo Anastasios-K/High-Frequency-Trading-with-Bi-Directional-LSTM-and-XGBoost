@@ -3,6 +3,8 @@ from sklearn.model_selection import train_test_split
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
 
+from ..data_preprocessing.scale_data import DataScaler
+
 
 class TrainTestSplitter:
 
@@ -27,3 +29,11 @@ class TrainTestSplitter:
         self.test_data = x_test
         self.info_tracker.train_labels = y_train
         self.info_tracker.test_labels = y_test
+
+    def scale_data(self):
+        return DataScaler(
+            config=self.config,
+            train_data=self.train_data,
+            test_data=self.test_data,
+            info_tracker=self.info_tracker
+        )
