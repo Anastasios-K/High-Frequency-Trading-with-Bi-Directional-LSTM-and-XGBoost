@@ -8,7 +8,7 @@ class DataLoader(object):
 
     def __init__(self, config: ConfigLoader):
         self.__config = config
-        self.data: pd.DataFrame = pd.read_csv(config.paths.datapath)
+        self.data: pd.DataFrame = pd.read_csv(self.__config.data_link.link)
         self.info_tracker = InfoTracker()
 
     def data_engineering(self):

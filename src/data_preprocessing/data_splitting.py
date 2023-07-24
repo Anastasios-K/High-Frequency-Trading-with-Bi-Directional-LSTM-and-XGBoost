@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
 
-from ..data_preprocessing.scale_data import DataScaler
+from ..data_preprocessing.data_scaling import DataScaler
 
 
 class TrainTestSplitter:

@@ -6,7 +6,7 @@ class RunHFTproject:
     def __init__(self, config_path):
         config = ConfigLoader(config_path)
         self.run = DataLoader(config=config)\
-            .data_engineering()\
+            # .data_engineering()\
             # .data_exploration()\
             # .label_creation()\
             # .split_data_in_train_test()\

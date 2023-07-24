@@ -5,6 +5,32 @@ from ..helper.helper import Helper
 
 
 @dataclass
+class DataLink:
+    link: str
+
+    @classmethod
+    def read_config(cls: t.Type["DataLink"], obj: dict):
+        return cls(
+            link=obj["data_link"]
+        )
+
+
+@dataclass
+class Paths:
+    path2save_exploration: str
+    path2save_data: str
+    path2save_models: str
+
+    @classmethod
+    def read_config(cls: t.Type["Paths"], obj: dict):
+        return cls(
+            path2save_exploration=obj["paths2save"]["exploration"],
+            path2save_data=obj["paths2save"]["data"],
+            path2save_models=obj["paths2save"]["models"]
+        )
+
+
+@dataclass
 class Model:
     model: str
     name: str
@@ -14,23 +40,6 @@ class Model:
         return cls(
             model=obj["model"]["model"],
             name=obj["model"]["name"]
-        )
-
-
-@dataclass
-class Paths:
-    datapath: str
-    path2save_exploration: str
-    path2save_data: str
-    path2save_models: str
-
-    @classmethod
-    def read_config(cls: t.Type["Paths"], obj: dict):
-        return cls(
-            datapath=obj["paths"]["data_path"],
-            path2save_exploration=obj["paths"]["paths2save"]["exploration"],
-            path2save_data=obj["paths"]["paths2save"]["data"],
-            path2save_models=obj["paths"]["paths2save"]["models"]
         )
 
 
@@ -97,8 +106,9 @@ class ConfigLoader(object):
     def __init__(self, config_path):
         config_file = Helper.read_yaml_file(path=config_path)
 
-        self.model = Model.read_config(obj=config_file)
+        self.data_link = DataLink.read_config(obj=config_file)
         self.paths = Paths.read_config(obj=config_file)
+        self.model = Model.read_config(obj=config_file)
         self.df_features = DataFeatures.read_config(obj=config_file)
         self.dataengin = DataEngineering.read_config(obj=config_file)
         self.labeltolerance = LabelTolerance.read_config(obj=config_file)
