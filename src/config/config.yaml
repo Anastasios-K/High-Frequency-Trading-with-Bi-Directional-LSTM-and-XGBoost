@@ -1,13 +1,13 @@
+data_link: "https://drive.google.com/uc?export=download&amp&id=13xzPp_HUshdsy1ia1ya4Gn8lqpBw8VLX&amp&confirm=t&amp&uuid=d9042302-2229-4102-8efc-a03970cdabb8"
+
+paths2save:
+  data: "data"
+  exploration: "exploration_plots"
+  models: "models"
+
 model:
   model: "test_model"
   name: "test_model"
-
-paths:
-  data_path: "data/NIFTY_50_1minute_with_indicators.csv"
-  paths2save:
-    data: "data"
-    exploration: "exploration_plots"
-    models: "models"
 
 data_fuatures_in_use:
     date: "date"
