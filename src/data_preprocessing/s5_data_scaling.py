@@ -1,10 +1,10 @@
 import os
 import pandas as pd
-import numpy as np
 import joblib
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
+from ..model_development.BiDirectional_LSTM.sliding_window_for_LSTM import LstmReshaper
 
 
 class DataScaler:
@@ -13,17 +13,38 @@ class DataScaler:
                  config: ConfigLoader,
                  train_data: pd.DataFrame,
                  test_data: pd.DataFrame,
+                 train_labels: pd.Series,
+                 test_labels: pd.Series,
                  info_tracker: InfoTracker):
-        self.config = config
-        self.train_data = train_data
-        self.test_data = test_data
-        self.info_tracker = info_tracker
+        self.__config = config
+        self.__train_data = train_data
+        self.__test_data = test_data
+        self.__info_tracker = info_tracker
 
-        self.scaled_train: np.array
-        self.scaled_test: np.array
+        self.__scaled_train_data: pd.DataFrame = pd.DataFrame()
+        self.__scaled_test_data: pd.DataFrame = pd.DataFrame()
 
         self.__scale_train_test()
         self.__store_train_test_in_tracking()
+
+        self.__scaled_train_data[config.df_features.labels] = train_labels
+        self.__scaled_test_data[config.df_features.labels] = test_labels
+
+    @property
+    def config(self):
+        return self.__config
+
+    @property
+    def info_tracker(self):
+        return self.__info_tracker
+
+    @property
+    def scaled_train_data(self):
+        return self.__scaled_train_data
+
+    @property
+    def scaled_test_data(self):
+        return self.__scaled_test_data
 
     def __choose_scaler(self):
         """ Pick the right scaling method based on configuration. """
@@ -46,7 +67,7 @@ class DataScaler:
         scaler = self.__choose_scaler()
 
         # Fit the train data ONLY!!!
-        scaler.fit(self.train_data)
+        scaler.fit(self.__train_data)
 
         # Prepare path to save scaler
         scaler_path = os.path.join(
@@ -66,13 +87,25 @@ class DataScaler:
         scaler = self.__fit_scaler()
 
         # Use the fitted scaled to transform the train and test data
-        self.scaled_train = scaler.transform(self.train_data)
-        self.scaled_test = scaler.transform(self.test_data)
+        scaled_train_data = scaler.transform(self.__train_data)
+        scaled_test_data = scaler.transform(self.__test_data)
+
+        # Convert to Pandas df with timestamps for better control and synchronisation.
+        self.__scaled_train_data = pd.DataFrame(data=scaled_train_data, index=self.__train_data.index)
+        self.__scaled_test_data = pd.DataFrame(data=scaled_test_data, index=self.__test_data.index)
 
     def __store_train_test_in_tracking(self):
         """ Move the original train and test data into the info tracker. """
-        self.info_tracker.train_data = self.train_data
-        self.info_tracker.test_data = self.test_data
+        self.info_tracker.train_data = self.__train_data
+        self.info_tracker.test_data = self.__test_data
+
+    def reshape_data_for_modelling(self):
+        return LstmReshaper(
+            config=self.config,
+            info_tracker=self.info_tracker,
+            scaled_train_data=self.scaled_train_data,
+            scaled_test_data=self.scaled_test_data
+        )
 
 
 

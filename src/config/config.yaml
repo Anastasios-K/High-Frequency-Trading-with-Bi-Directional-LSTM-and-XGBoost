@@ -26,3 +26,30 @@ label_tolerance:
 
 scaling_method: "asdaf"
 min_max_scaler_range: ""
+
+general_params:
+  seed: 7
+
+BiLSTM:
+  General_params:
+    window_length: 7
+
+  Hyper_params:
+    lstm_units_min: 10
+    lstm_units_max: 12
+    lstm_units_step: 2
+    dense_units_min: 10
+    dense_units_max: 12
+    dense_units_step: 2
+    lr_min: 0.001
+    lr_max: 0.01
+    lr_step: 2
+    drop_out_min: 0.1
+    drop_out_max: 0.2
+    drop_out_step: 1
+
+
+
+
+
+

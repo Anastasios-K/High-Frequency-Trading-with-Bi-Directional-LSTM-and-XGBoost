@@ -101,6 +101,50 @@ class ScalingMethod:
         )
 
 
+@dataclass
+class LstmGeneralParams:
+    window_length: int
+
+    @classmethod
+    def read_config(cls: t.Type["LstmGeneralParams"], obj: dict):
+        return cls(
+            window_length=obj["BiLSTM"]["General_params"]["window_length"]
+        )
+
+
+@dataclass
+class LstmHyperParams:
+    lstm_units_min: int
+    lstm_units_max: int
+    lstm_units_step: int
+    dense_units_min: int
+    dense_units_max: int
+    dense_units_step: int
+    lr_min: float
+    lr_max: float
+    lr_step: int
+    drop_out_min: float
+    drop_out_max: float
+    drop_out_step: int
+
+    @classmethod
+    def read_config(cls: t.Type["LstmHyperParams"], obj: dict):
+        return cls(
+            lstm_units_min=obj["BiLSTM"]["Hyper_params"]["lstm_units_min"],
+            lstm_units_max=obj["BiLSTM"]["Hyper_params"]["lstm_units_max"],
+            lstm_units_step=obj["BiLSTM"]["Hyper_params"]["lstm_units_step"],
+            dense_units_min=obj["BiLSTM"]["Hyper_params"]["dense_units_min"],
+            dense_units_max=obj["BiLSTM"]["Hyper_params"]["dense_units_max"],
+            dense_units_step=obj["BiLSTM"]["Hyper_params"]["dense_units_step"],
+            lr_min=obj["BiLSTM"]["Hyper_params"]["lr_min"],
+            lr_max=obj["BiLSTM"]["Hyper_params"]["lr_max"],
+            lr_step=obj["BiLSTM"]["Hyper_params"]["lr_step"],
+            drop_out_min=obj["BiLSTM"]["Hyper_params"]["drop_out_min"],
+            drop_out_max=obj["BiLSTM"]["Hyper_params"]["drop_out_max"],
+            drop_out_step=obj["BiLSTM"]["Hyper_params"]["drop_out_step"]
+        )
+
+
 class ConfigLoader(object):
 
     def __init__(self, config_path):
@@ -113,3 +157,6 @@ class ConfigLoader(object):
         self.dataengin = DataEngineering.read_config(obj=config_file)
         self.labeltolerance = LabelTolerance.read_config(obj=config_file)
         self.scaling_method = ScalingMethod.read_config(obj=config_file)
+        self.lstm_general_params = LstmGeneralParams.read_config(obj=config_file)
+        self.lstm_hyper_params = LstmHyperParams.read_config(obj=config_file)
+

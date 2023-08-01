@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from ydata_profiling import ProfileReport
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
-from ..data_preprocessing.labels_creation import LabelCreator
+from ..data_preprocessing.s3_labels_creation import LabelCreator
 
 
 class DataExplorator(object):
@@ -17,14 +17,26 @@ class DataExplorator(object):
     """
 
     def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
-        self.config = config
-        self.data = data
-        self.info_tracker = info_tracker
+        self.__config = config
+        self.__data = data
+        self.__info_tracker = info_tracker
 
         os.makedirs(config.paths.path2save_exploration, exist_ok=True)
         self.__crate_candlestick_chart()
         self.__plot_multiple_data_resolutions()
-        self.__create_eda_report()
+        # self.__create_eda_report()
+
+    @property
+    def config(self):
+        return self.__config
+
+    @property
+    def data(self):
+        return self.__data
+
+    @property
+    def info_tracker(self):
+        return self.__info_tracker
 
     def __filter_data_in_interest(self, start_date: str, end_date: str) -> pd.DataFrame:
         """ Filter the data based on the start and and end date. """
