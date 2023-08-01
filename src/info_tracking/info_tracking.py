@@ -5,11 +5,12 @@ import numpy as np
 class InfoTracker:
 
     def __init__(self):
-        self.duplicated_values: int = np.nan
-        self.missing_values: dict = dict()
-        self.labels: pd.Series = pd.Series()
-        self.train_labels: pd.Series = pd.Series()
-        self.test_labels: pd.Series = pd.Series()
-        self.scaling_method: str = ""
-        self.train_data: pd.DataFrame = pd.DataFrame()
-        self.test_data: pd.DataFrame = pd.DataFrame()
+        self.duplicated_values: int = None
+        self.missing_values: dict = None
+        self.train_labels: pd.Series = None
+        self.test_labels: pd.Series = None
+        self.scaling_method: str = None
+        self.train_data: pd.DataFrame = None
+        self.test_data: pd.DataFrame = None
+        self.lstm_reshaped_test_labels: np.array = None
+        self.lstm_reshaped_train_labels: np.array = None

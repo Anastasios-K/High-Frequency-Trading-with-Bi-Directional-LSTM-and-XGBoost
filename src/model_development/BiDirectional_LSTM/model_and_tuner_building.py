@@ -2,12 +2,8 @@ import os
 import numpy as np
 import pandas as pd
 from ...config.config_loading import ConfigLoader
-
-
-import tensorflow
-
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Input, LSTM, Dense, Dropout, Flatten, BatchNormalization
+from tensorflow.keras.layers import Input, LSTM, Bidirectional, Dense, Dropout, Flatten, BatchNormalization
 from tensorflow.keras.initializers import GlorotUniform, Zeros, Orthogonal
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
@@ -15,11 +11,11 @@ from tensorflow.keras.metrics import AUC, Precision, Recall
 from keras_tuner.tuners import RandomSearch
 
 
-class LstmBuilder(Builder):
+class LstmBuilder:
 
     def __init__(
             self,
-            config: Configurator,
+            config: ConfigLoader,
             number_of_classes,
             unique_id: str,
             train_data: pd.DataFrame,
@@ -36,44 +32,48 @@ class LstmBuilder(Builder):
         self.reshaped_test_data = None
         self.train_labels = train_labels
         self.test_labels = test_labels
-        self._reshape_data()
+
+        # self._reshape_data()
         self.keras_hypermodel = self._build_hypermodel()
 
-    def _reshape_data(self) -> None:
-        """
-        Reshape train and test data based on a window length which is set in configuration file.
-        Tensorflow LSTM a 3D tensor with shape [batch, timesteps, feature].
-        """
-        window = self.__config.forecasthorizon.forcasthorizon
-        windowed_train_dfs = list(self.__train_data.rolling(window))[window:]
-        windowed_test_dfs = list(self.__test_data.rolling(window))[window:]
-        self.reshaped_train_data = np.array(windowed_train_dfs)
-        self.reshaped_test_data = np.array(windowed_test_dfs)
-        self.train_labels = self.train_labels[window:]
-        self.test_labels = self.test_labels[window:]
-
-        # For debugging ONLY
-        self.__train_data = self.__train_data[window:]
-        self.__test_data = self.__test_data[window:]
+    # def _reshape_data(self) -> None:
+    #     """
+    #     Reshape train and test data based on a window length which is set in configuration file.
+    #     Tensorflow LSTM a 3D tensor with shape [batch, timesteps, feature].
+    #     """
+    #     window = self.__config.forecasthorizon.forcasthorizon
+    #     windowed_train_dfs = list(self.__train_data.rolling(window))[window:]
+    #     windowed_test_dfs = list(self.__test_data.rolling(window))[window:]
+    #     self.reshaped_train_data = np.array(windowed_train_dfs)
+    #     self.reshaped_test_data = np.array(windowed_test_dfs)
+    #     self.train_labels = self.train_labels[window:]
+    #     self.test_labels = self.test_labels[window:]
+    #
+    #     # For debugging ONLY
+    #     self.__train_data = self.__train_data[window:]
+    #     self.__test_data = self.__test_data[window:]
 
     def _build_model(self, hp) -> None:
         """
         Build Tensorfow LSTM model.
-        The hp parameter is used by Keras Tuner only.
-        So, we pass the whole method to Keras Tuner later in this script.
+        The hp parameter is used by Keras Tuner ONLY.
+            The whole method is passed to Keras Tuner object in the fumction build_hypermodel.
         The mothod initialises all the hyper parameters which are set in the configuration file.
         The method also incorporates the loss fucntion, optimiser and metrics.
         """
         # Load general and hyper parameters
         gparams = self.__config.lstmGparams
         hparams = self.__config.lstmHparams
+
         # set initialisation
         kernel_init = GlorotUniform(seed=gparams.seed)
         recurrent_init = Orthogonal(seed=gparams.seed)
         bias_init = Zeros()
+
         # build the lstm model
         model = Sequential()
-        # prepare haper parameters
+
+        # prepare hyper parameters
         lstm_units = hp.Int(
             "lstm_units",
             min_value=hparams.lstmunitsmin,

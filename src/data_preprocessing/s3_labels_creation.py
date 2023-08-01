@@ -1,22 +1,33 @@
 import os.path
-
 import pandas as pd
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
-from ..data_preprocessing.data_splitting import TrainTestSplitter
+from ..data_preprocessing.s4_data_splitting import TrainTestSplitter
 
 
 class LabelCreator(object):
 
     def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
-        self.data = data
-        self.config = config
-        self.info_tracker = info_tracker
+        self.__data = data
+        self.__config = config
+        self.__info_tracker = info_tracker
 
         self.__shifted_col: str = "Shifted"
         self.__diff_col: str = "Diff"
 
         self.__create_labels()
+
+    @property
+    def config(self):
+        return self.__config
+
+    @property
+    def data(self):
+        return self.__data
+
+    @property
+    def info_tracker(self):
+        return self.__info_tracker
 
     def __calc_price_difference(self) -> pd.DataFrame:
         """
@@ -65,12 +76,7 @@ class LabelCreator(object):
         # drop Nan values as well as price difference and shifted columns
         df.dropna(inplace=True)
 
-        # save preprocessed data and labels - To be able to access and use it without executing preprocessing again
-        df.to_csv(os.path.join(self.config.paths.path2save_data, "preprocessed_data.csv"),
-                  index=False, index_label=True)
-
-        self.info_tracker.labels = df[label_col]
-        self.data = df.drop(columns=[self.__diff_col, self.__shifted_col, label_col])
+        self.__data = df.drop(columns=[self.__diff_col, self.__shifted_col])
 
     # @classmethod
     # def create_label_weights(cls, train_labels: np.ndarray) -> dict:

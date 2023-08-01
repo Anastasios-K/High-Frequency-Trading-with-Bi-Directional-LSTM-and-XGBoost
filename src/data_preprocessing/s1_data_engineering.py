@@ -1,15 +1,15 @@
 import pandas as pd
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
-from ..data_preprocessing.data_exploration import DataExplorator
+from ..data_preprocessing.s2_data_exploration import DataExplorator
 
 
 class DataEngineer(object):
 
     def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
         self.__config = config
-        self.data = data
-        self.info_tracker = info_tracker
+        self.__data = data
+        self.__info_tracker = info_tracker
 
         self.__remove_unused_data()
         self.__fix_data_type()
@@ -17,10 +17,22 @@ class DataEngineer(object):
         self.__index_and_sort_by_timestamps()
         self.__remove_duplicates()
 
+    @property
+    def config(self):
+        return self.__config
+
+    @property
+    def data(self):
+        return self.__data
+
+    @property
+    def info_tracker(self):
+        return self.__info_tracker
+
     def __remove_unused_data(self):
         """ Remove unused data features and keep only the data features that are in interest """
         data = self.data.copy()
-        config = self.__config
+        config = self.config
 
         # set up existing and desired data features
         df_features = data.columns
@@ -32,7 +44,7 @@ class DataEngineer(object):
         # Drop the features that are included into the difference set from the given dataset
         data.drop(columns=list(features2drop), inplace=True)
 
-        self.data = data
+        self.__data = data
 
     def __fix_data_type(self):
         """ Fix the data type of the data features. """
@@ -48,7 +60,7 @@ class DataEngineer(object):
             else:
                 val = pd.to_numeric(data[col])
                 data[col] = val
-        self.data = data
+        self.__data = data
 
     def __count_missing_values(self) -> dict:
         """ Count the missing values for each data feature and store them in a dictionary. """
@@ -63,7 +75,7 @@ class DataEngineer(object):
 
     def __replace_missing_values(self):
         """ Replace the NaN values based on predetermined method, set in the configurations. """
-        config = self.__config
+        config = self.config
         data = self.data.copy()
 
         # count missing values
@@ -101,7 +113,7 @@ class DataEngineer(object):
             else:
                 raise ValueError("An invalid fill method is given.")
 
-        self.data = data
+        self.__data = data
 
     def __index_and_sort_by_timestamps(self):
         """ Set timestamps as index and sort the data. """
@@ -114,7 +126,7 @@ class DataEngineer(object):
 
     def __count_duplicates(self) -> int:
         """ Count duplicated rows using timestamps. """
-        config = self.__config
+        config = self.config
         data = self.data.copy()
 
         dupli_amount = data[config.df_features.date].duplicated(False).sum()
@@ -122,7 +134,7 @@ class DataEngineer(object):
 
     def __remove_duplicates(self):
         """ Remove duplicates identified based on the Date feature. Drops the Date feature at the end. """
-        config = self.__config
+        config = self.config
         data = self.data.copy()
 
         # Count duplicated rows
@@ -143,11 +155,11 @@ class DataEngineer(object):
             columns=[config.df_features.date],
             inplace=True
         )
-        self.data = data
+        self.__data = data
 
     def data_exploration(self):
         return DataExplorator(
             data=self.data,
-            config=self.__config,
+            config=self.config,
             info_tracker=self.info_tracker
         )
