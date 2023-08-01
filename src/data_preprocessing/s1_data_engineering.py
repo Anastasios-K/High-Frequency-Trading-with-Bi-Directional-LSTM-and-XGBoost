@@ -4,9 +4,12 @@ from ..info_tracking.info_tracking import InfoTracker
 from ..data_preprocessing.s2_data_exploration import DataExplorator
 
 
-class DataEngineer(object):
+class DataEngineer:
 
-    def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
+    def __init__(self,
+                 data: pd.DataFrame,
+                 config: ConfigLoader,
+                 info_tracker: InfoTracker):
         self.__config = config
         self.__data = data
         self.__info_tracker = info_tracker
@@ -29,7 +32,7 @@ class DataEngineer(object):
     def info_tracker(self):
         return self.__info_tracker
 
-    def __remove_unused_data(self):
+    def __remove_unused_data(self) -> None:
         """ Remove unused data features and keep only the data features that are in interest """
         data = self.data.copy()
         config = self.config
@@ -46,8 +49,9 @@ class DataEngineer(object):
 
         self.__data = data
 
-    def __fix_data_type(self):
+    def __fix_data_type(self) -> None:
         """ Fix the data type of the data features. """
+
         data = self.data.copy()
 
         # for each feature in data
@@ -64,8 +68,8 @@ class DataEngineer(object):
 
     def __count_missing_values(self) -> dict:
         """ Count the missing values for each data feature and store them in a dictionary. """
-        data = self.data.copy()
 
+        data = self.data.copy()
         nan_dict = {}
 
         for col in data.columns:
@@ -73,8 +77,9 @@ class DataEngineer(object):
 
         return nan_dict
 
-    def __replace_missing_values(self):
+    def __replace_missing_values(self) -> None:
         """ Replace the NaN values based on predetermined method, set in the configurations. """
+
         config = self.config
         data = self.data.copy()
 
@@ -115,7 +120,7 @@ class DataEngineer(object):
 
         self.__data = data
 
-    def __index_and_sort_by_timestamps(self):
+    def __index_and_sort_by_timestamps(self) -> None:
         """ Set timestamps as index and sort the data. """
 
         # Set date column as index
@@ -126,14 +131,16 @@ class DataEngineer(object):
 
     def __count_duplicates(self) -> int:
         """ Count duplicated rows using timestamps. """
+
         config = self.config
         data = self.data.copy()
 
         dupli_amount = data[config.df_features.date].duplicated(False).sum()
         return dupli_amount
 
-    def __remove_duplicates(self):
+    def __remove_duplicates(self) -> None:
         """ Remove duplicates identified based on the Date feature. Drops the Date feature at the end. """
+
         config = self.config
         data = self.data.copy()
 
@@ -157,7 +164,7 @@ class DataEngineer(object):
         )
         self.__data = data
 
-    def data_exploration(self):
+    def data_exploration(self) -> DataExplorator:
         return DataExplorator(
             data=self.data,
             config=self.config,

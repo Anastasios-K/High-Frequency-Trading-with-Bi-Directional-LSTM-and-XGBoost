@@ -23,7 +23,7 @@ class DataLoader(object):
     def info_tracker(self):
         return self.__info_tracker
 
-    def data_engineering(self):
+    def data_engineering(self) -> DataEngineer:
         return DataEngineer(
             data=self.__data,
             config=self.__config,
