@@ -33,6 +33,12 @@ general_params:
 BiLSTM:
   General_params:
     window_length: 7
+    seed: 10
+    number_of_classes: 3
+    lstm_activation_function: "tanh"
+    recurrent_activation: "sigmoid"
+    dense_activation_function: "relu"
+    classification_activation_function: "softmax"
 
   Hyper_params:
     lstm_units_min: 10

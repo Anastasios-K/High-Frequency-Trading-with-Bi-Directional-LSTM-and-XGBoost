@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from ...config.config_loading import ConfigLoader
 from ...info_tracking.info_tracking import InfoTracker
+from ..BiDirectional_LSTM.model_and_tuner_building import BiLstmBuilder
 
 
 class LstmReshaper:
@@ -90,6 +91,16 @@ class LstmReshaper:
 
         self.__reshaped_test_data, \
             self.__reshaped_test_labels = self.__sliding_window_process(data=self.__scaled_test_data)
+
+    def build_model_n_tuner(self):
+        return BiLstmBuilder(
+            config=self.config,
+            info_tracker=self.info_tracker,
+            train_data=self.reshaped_train_data,
+            test_data=self.reshaped_test_data,
+            train_labels=self.reshaped_train_labels,
+            test_labels=self.reshaped_test_labels
+        )
 
 
 
