@@ -11,7 +11,8 @@ class RunHFTproject:
             .label_creation()\
             .split_data_in_train_test()\
             .scale_data()\
-            .reshape_data_for_modelling()
+            .reshape_data_for_modelling()\
+            .build_model_n_tuner()
 
 
 if __name__ == "__main__":

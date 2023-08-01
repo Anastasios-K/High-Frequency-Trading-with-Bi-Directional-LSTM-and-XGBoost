@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 import typing as t
 from ..helper.helper import Helper
 
@@ -104,11 +103,23 @@ class ScalingMethod:
 @dataclass
 class LstmGeneralParams:
     window_length: int
+    seed: int
+    number_of_classes: int
+    lstm_activation_function: str
+    recurrent_function: str
+    dense_activation_function: str
+    classification_activation_function: str
 
     @classmethod
     def read_config(cls: t.Type["LstmGeneralParams"], obj: dict):
         return cls(
-            window_length=obj["BiLSTM"]["General_params"]["window_length"]
+            window_length=obj["BiLSTM"]["General_params"]["window_length"],
+            seed=obj["BiLSTM"]["General_params"]["seed"],
+            lstm_activation_function=obj["BiLSTM"]["General_params"]["lstm_activation_function"],
+            recurrent_function=obj["BiLSTM"]["General_params"]["recurrent_activation"],
+            number_of_classes=obj["BiLSTM"]["General_params"]["number_of_classes"],
+            dense_activation_function=obj["BiLSTM"]["General_params"]["dense_activation_function"],
+            classification_activation_function=obj["BiLSTM"]["General_params"]["classification_activation_function"]
         )
 
 
