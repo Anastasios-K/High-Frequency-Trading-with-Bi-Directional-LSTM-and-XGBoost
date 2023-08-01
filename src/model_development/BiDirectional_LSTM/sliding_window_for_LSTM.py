@@ -6,8 +6,11 @@ from ...info_tracking.info_tracking import InfoTracker
 
 class LstmReshaper:
 
-    def __init__(self, config: ConfigLoader, info_tracker: InfoTracker,
-                 scaled_train_data: np.array, scaled_test_data: np.array):
+    def __init__(self,
+                 config: ConfigLoader,
+                 info_tracker: InfoTracker,
+                 scaled_train_data: np.array,
+                 scaled_test_data: np.array):
         self.__config = config
         self.__info_tracker = info_tracker
         self.__scaled_train_data = scaled_train_data
@@ -67,7 +70,8 @@ class LstmReshaper:
             # Convert dataframe to array.
             temp_array = np.array(temp_data)
             # Extract the corresponding label.
-            # The last label is the right one, as sychronisation is conducted in label_creation object.
+            # We have a 2D array here - The corresponding label is at the right bottom corner.
+            # Timewise, this is the right label as sychronisation is conducted in "LabelCreator" object.
             label = temp_array[-1, -1]
             # Labels are removed from the data.
             temp_array_no_labels = temp_array[:, :-1]
@@ -79,7 +83,7 @@ class LstmReshaper:
         final_labels = np.array(label_list)
         return final_data, final_labels
 
-    def __apply_sw_to_train_n_test(self):
+    def __apply_sw_to_train_n_test(self) -> None:
         """ Apply the sliding window to the train and test data. """
         self.__reshaped_train_data, \
             self.__reshaped_train_labels = self.__sliding_window_process(data=self.__scaled_train_data)

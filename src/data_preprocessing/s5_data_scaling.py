@@ -49,9 +49,10 @@ class DataScaler:
     def __choose_scaler(self):
         """ Pick the right scaling method based on configuration. """
         scaling_method = self.config.scaling_method.method
+        # Store scaling method in the info tracker.
         self.info_tracker.scaling_method = scaling_method
 
-        # Pick a scaling method between Robust, MinMax and StandardScaler
+        # Pick a scaling method between Robust, MinMax and StandardScaler.
         if scaling_method == "robust":
             scaler = RobustScaler()
         elif scaling_method == "minmax":
@@ -63,13 +64,13 @@ class DataScaler:
     def __fit_scaler(self):
         """ Fit the train data in the selected scaler. """
 
-        # Choose a scaler
+        # Choose a scaler.
         scaler = self.__choose_scaler()
 
         # Fit the train data ONLY!!!
         scaler.fit(self.__train_data)
 
-        # Prepare path to save scaler
+        # Prepare path to save scaler.
         scaler_path = os.path.join(
             self.config.paths.path2save_models,
             self.config.model.name

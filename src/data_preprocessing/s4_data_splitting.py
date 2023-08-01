@@ -8,7 +8,10 @@ from ..data_preprocessing.s5_data_scaling import DataScaler
 
 class TrainTestSplitter:
 
-    def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
+    def __init__(self,
+                 data: pd.DataFrame,
+                 config: ConfigLoader,
+                 info_tracker: InfoTracker):
         self.__data = data
         self.__config = config
         self.__info_tracker = info_tracker
@@ -18,7 +21,7 @@ class TrainTestSplitter:
         self.__train_labels: pd.Series = pd.Series()
         self.__test_labels: pd.Series = pd.Series()
 
-        self.split_data_into_train_n_test()
+        self.__split_data_into_train_n_test()
 
     @property
     def config(self):
@@ -44,14 +47,16 @@ class TrainTestSplitter:
     def test_labels(self):
         return self.__test_labels
 
-    def __separate_data_n_labels(self):
+    def __separate_data_n_labels(self) -> (pd.DataFrame, pd.Series):
         """ Separate data and labels. Also drop labels from the data dataframe. """
+
         labels = self.__data[self.__config.df_features.labels]
         data = self.__data.copy().drop(columns=[self.__config.df_features.labels])
         return data, labels
 
-    def split_data_into_train_n_test(self):
+    def __split_data_into_train_n_test(self) -> None:
         """ Split data and labels in training and test sets. """
+
         data, labels = self.__separate_data_n_labels()
 
         x_train, x_test, y_train, y_test = train_test_split(
@@ -65,7 +70,7 @@ class TrainTestSplitter:
         self.__train_labels = y_train
         self.__test_labels = y_test
 
-    def scale_data(self):
+    def scale_data(self) -> DataScaler:
         return DataScaler(
             config=self.config,
             train_data=self.train_data,

@@ -1,13 +1,15 @@
-import os.path
 import pandas as pd
 from ..config.config_loading import ConfigLoader
 from ..info_tracking.info_tracking import InfoTracker
 from ..data_preprocessing.s4_data_splitting import TrainTestSplitter
 
 
-class LabelCreator(object):
+class LabelCreator:
 
-    def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
+    def __init__(self,
+                 data: pd.DataFrame,
+                 config: ConfigLoader,
+                 info_tracker: InfoTracker):
         self.__data = data
         self.__config = config
         self.__info_tracker = info_tracker
@@ -45,7 +47,7 @@ class LabelCreator(object):
         temp_df[self.__diff_col] = (temp_df[dff.close] / temp_df[self.__shifted_col]) - 1
         return temp_df
 
-    def __create_labels(self) -> (pd.DataFrame, pd.Series):
+    def __create_labels(self) -> None:
         """
         Call the _calc_price_difference to get the 2 new features (shifted close and % difference).
         Create 3 classes based on the 3 conditions below and put them into the label feature.
@@ -78,24 +80,7 @@ class LabelCreator(object):
 
         self.__data = df.drop(columns=[self.__diff_col, self.__shifted_col])
 
-    # @classmethod
-    # def create_label_weights(cls, train_labels: np.ndarray) -> dict:
-    #     """
-    #     Calculate class weights based on each class population.
-    #     Crucial step when the training data is imbalanced.
-    #     """
-    #     label_weights = {}
-    #     # capture the 2nd array dimenssion (the number of columns in pd.DataFrame)
-    #     lbs_amount = len(train_labels.unique())
-    #
-    #     for idx in range(lbs_amount):
-    #         weight_dict = {
-    #             idx: (1 / np.count_nonzero(train_labels == idx)) * (len(train_labels)) / lbs_amount
-    #         }
-    #         label_weights.update(weight_dict)
-    #     return label_weights
-
-    def split_data_in_train_test(self):
+    def split_data_in_train_test(self) -> TrainTestSplitter:
         return TrainTestSplitter(
             config=self.config,
             data=self.data,

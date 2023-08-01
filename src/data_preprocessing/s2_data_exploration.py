@@ -7,7 +7,7 @@ from ..info_tracking.info_tracking import InfoTracker
 from ..data_preprocessing.s3_labels_creation import LabelCreator
 
 
-class DataExplorator(object):
+class DataExplorator:
     """
     Class to explore the time-series data.
     It creates the following:
@@ -16,7 +16,10 @@ class DataExplorator(object):
         3. Explanatory Data Analysis report
     """
 
-    def __init__(self, data: pd.DataFrame, config: ConfigLoader, info_tracker: InfoTracker):
+    def __init__(self,
+                 data: pd.DataFrame,
+                 config: ConfigLoader,
+                 info_tracker: InfoTracker):
         self.__config = config
         self.__data = data
         self.__info_tracker = info_tracker
@@ -327,7 +330,7 @@ class DataExplorator(object):
 
         profile.to_file(os.path.join(self.config.paths.path2save_exploration, "EDanalysis.html"))
 
-    def label_creation(self):
+    def label_creation(self) -> LabelCreator:
         return LabelCreator(
             data=self.data,
             config=self.config,
